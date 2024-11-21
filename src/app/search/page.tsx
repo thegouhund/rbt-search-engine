@@ -5,6 +5,7 @@ import GoogleText from "../components/GoogleText";
 import SearchBar from "../components/SearchBar";
 import { useSearchParams } from "next/navigation";
 import { Node } from "@/app/types/node";
+import Link from "next/link";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -30,7 +31,7 @@ export default function SearchPage() {
   if (!results || results.length === 0) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <header className="py-6 px-8 border-b border-gray-600">
+        <header className="border-b border-gray-600 px-8 py-6">
           <GoogleText />
         </header>
 
@@ -47,7 +48,7 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="py-6 px-8 border-b border-gray-600">
+      <header className="border-b border-gray-600 px-8 py-6">
         <GoogleText />
       </header>
 
@@ -61,12 +62,12 @@ export default function SearchPage() {
           <div className="w-full space-y-6">
             {results?.map((result, index) => (
               <div key={index} className="border-b border-gray-600 pb-4">
-                <a
-                  href={result.key}
-                  className="text-[#8FB5EC] text-lg font-medium hover:underline"
+                <Link
+                  href={result.value}
+                  className="text-lg font-medium text-[#8FB5EC] hover:underline"
                 >
                   {result.value}
-                </a>
+                </Link>
                 <p className="text-green-600">{result.key}</p>
                 <p className="text-gray-300">
                   {result.description ?? "lorem ipsum dolor sit amet consectur"}
