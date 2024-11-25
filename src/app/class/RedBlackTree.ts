@@ -116,9 +116,6 @@ export default class RedBlackTree {
   }
 
   public insertNode(newNode: Node) {
-    // const newNode = new Node(key, value, true, content);
-    // newNode.gimmick = new GimmickAction(newNode.gimmick);
-
     if (!this.root) {
       this.root = newNode;
       this.root.isRed = false;
