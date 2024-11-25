@@ -1,28 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 
-import { Node as NodeType } from "../types/node";
-class Node {
-  constructor(
-    public key: string,
-    public value: string,
-    public isRed: boolean,
-    public content: string,
-    public left: Node | null = null,
-    public right: Node | null = null,
-    public parent: Node | null = null,
-  ) {}
+import Node from "./Node";
 
-  public toJSON(): NodeType {
-    return {
-      key: this.key,
-      value: this.value,
-      content: this.content,
-    };
-  }
-}
-
-export class RedBlackTree {
+export default class RedBlackTree {
   private root: Node | null = null;
 
   private rotateLeft(x: Node) {
@@ -134,6 +115,40 @@ export class RedBlackTree {
     this.fixInsert(newNode);
   }
 
+  public insertNode(newNode: Node) {
+    // const newNode = new Node(key, value, true, content);
+    // newNode.gimmick = new GimmickAction(newNode.gimmick);
+
+    if (!this.root) {
+      this.root = newNode;
+      this.root.isRed = false;
+      return;
+    }
+
+    let current = this.root;
+    let parent: Node | null = null;
+
+    while (current) {
+      parent = current;
+      if (newNode.key < current.key) {
+        current = current.left;
+      } else {
+        current = current.right;
+      }
+    }
+
+    newNode.parent = parent;
+    if (parent) {
+      if (newNode.key < parent.key) {
+        parent.left = newNode;
+      } else {
+        parent.right = newNode;
+      }
+    }
+
+    this.fixInsert(newNode);
+  }
+
   public printTree() {
     if (!this.root) {
       console.log("Tree is empty");
@@ -170,7 +185,7 @@ export class RedBlackTree {
     console.log();
   }
 
-  _preorderRec(root: Node) {
+  _preorderRec(root: Node | null) {
     if (root !== null) {
       process.stdout.write(root.key + " -> ");
       this._preorderRec(root.left);
@@ -183,7 +198,7 @@ export class RedBlackTree {
     console.log();
   }
 
-  _inorderRec(root: Node) {
+  _inorderRec(root: Node | null) {
     if (root !== null) {
       this._inorderRec(root.left);
       process.stdout.write(root.key + " -> ");
@@ -196,7 +211,7 @@ export class RedBlackTree {
     console.log();
   }
 
-  _postorderRec(root: Node) {
+  _postorderRec(root: Node | null) {
     if (root !== null) {
       this._postorderRec(root.left);
       this._postorderRec(root.right);
@@ -204,7 +219,7 @@ export class RedBlackTree {
     }
   }
 
-  public searchByKeySubstring(substring: string): NodeType[] {
+  public searchByKeySubstring(substring: string): Node[] {
     const result: Node[] = [];
     this.searchByKeySubstringHelper(this.root, substring, result);
     return result;
@@ -217,7 +232,7 @@ export class RedBlackTree {
   ) {
     if (!node) return;
     if (node.key.includes(substring)) {
-      result.push(node.toJSON());
+      result.push(node);
     }
     this.searchByKeySubstringHelper(node.left, substring, result);
     this.searchByKeySubstringHelper(node.right, substring, result);

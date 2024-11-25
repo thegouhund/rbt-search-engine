@@ -2,9 +2,10 @@
 
 import { redirect, useSearchParams } from "next/navigation";
 import { Search, X } from "react-bootstrap-icons";
-import { Node } from "@/app/types/node";
 import { useState } from "react";
 import debounce from "lodash/debounce";
+import tree from "@/app/tree";
+import Node from "../class/Node";
 
 const SearchBar = () => {
   const searchParams = useSearchParams();
@@ -17,11 +18,12 @@ const SearchBar = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const query = formData.get("q") as string;
+    setShowSuggestions(false);
     redirect(`/search?q=${query}`);
   };
 
   const fetchSuggestions = async (query: string) => {
-    const data = await (await fetch(`/api/search?q=${query}`)).json();
+    const data = tree.searchByKeySubstring(query);
     setSuggestions(data);
   };
 

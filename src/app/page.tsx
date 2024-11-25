@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import GoogleText from "./components/GoogleText";
 import SearchBar from "./components/SearchBar";
+import tree from "./tree";
 
 export default function Home() {
   return (

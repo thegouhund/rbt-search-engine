@@ -1,8 +1,8 @@
 "use client";
 
 import React, { use, useEffect, useState } from "react";
-import { Node } from "../../types/node";
-import { redirect } from "next/navigation";
+import tree from "@/app/tree";
+import Node from "@/app/class/Node";
 
 type Params = Promise<{ key: string }>;
 
@@ -11,15 +11,9 @@ const WebsitePage = ({ params }: { params: Params }) => {
   const [node, setNode] = useState<Node | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const request = await fetch(`/api/node/${key}`, { cache: "force-cache" });
-      const data: Node = await request.json();
-      console.log(data);
-      setNode(data);
-      if (!request.ok) redirect("/404");
-    };
-
-    fetchData();
+    const decodedKey = decodeURIComponent(key); // from URI to normal string eg: "how%20to" => "how to"
+    const data = tree.search(decodedKey) as Node | null;
+    setNode(data);
   }, [key]);
 
   return (
