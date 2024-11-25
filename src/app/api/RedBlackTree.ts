@@ -1,20 +1,23 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
+
+import { Node as NodeType } from "../types/node";
 class Node {
   constructor(
     public key: string,
     public value: string,
     public isRed: boolean,
+    public content: string,
     public left: Node | null = null,
     public right: Node | null = null,
-    public parent: Node | null = null
+    public parent: Node | null = null,
   ) {}
 
-  public toJSON(): Node {
+  public toJSON(): NodeType {
     return {
       key: this.key,
       value: this.value,
-      isRed: this.isRed,
-      left: this.left ? this.left.toJSON() : null,
-      right: this.right ? this.right.toJSON() : null,
+      content: this.content,
     };
   }
 }
@@ -99,8 +102,8 @@ export class RedBlackTree {
     this.root.isRed = false;
   }
 
-  public insert(key: string, value: any) {
-    const newNode = new Node(key, value, true);
+  public insert(key: string, value: string, content: string) {
+    const newNode = new Node(key, value, true, content);
     if (!this.root) {
       this.root = newNode;
       this.root.isRed = false;
@@ -143,7 +146,7 @@ export class RedBlackTree {
     if (!node) return;
     this.printNode(node.right, level + 1);
     console.log(
-      " ".repeat(level * 4) + (node.isRed ? "R" : "B") + ":" + node.key
+      " ".repeat(level * 4) + (node.isRed ? "R" : "B") + ":" + node.key,
     );
     this.printNode(node.left, level + 1);
   }
@@ -162,13 +165,46 @@ export class RedBlackTree {
     return null;
   }
 
-  public visualize(): any {
-    const result: any[] = [];
-    this.inOrderTraversal(this.root, result);
-    return result;
+  preorder() {
+    this._preorderRec(this.root);
+    console.log();
   }
 
-  public searchByKeySubstring(substring: string): Node[] {
+  _preorderRec(root: Node) {
+    if (root !== null) {
+      process.stdout.write(root.key + " -> ");
+      this._preorderRec(root.left);
+      this._preorderRec(root.right);
+    }
+  }
+
+  inorder() {
+    this._inorderRec(this.root);
+    console.log();
+  }
+
+  _inorderRec(root: Node) {
+    if (root !== null) {
+      this._inorderRec(root.left);
+      process.stdout.write(root.key + " -> ");
+      this._inorderRec(root.right);
+    }
+  }
+
+  postorder() {
+    this._postorderRec(this.root);
+    console.log();
+  }
+
+  _postorderRec(root: Node) {
+    if (root !== null) {
+      this._postorderRec(root.left);
+      this._postorderRec(root.right);
+      process.stdout.write(root.key + " -> ");
+    }
+  }
+
+  public searchByKeySubstring(substring: string): NodeType[] {
     const result: Node[] = [];
     this.searchByKeySubstringHelper(this.root, substring, result);
     return result;
@@ -177,7 +213,7 @@ export class RedBlackTree {
   private searchByKeySubstringHelper(
     node: Node | null,
     substring: string,
-    result: Node[]
+    result: Node[],
   ) {
     if (!node) return;
     if (node.key.includes(substring)) {

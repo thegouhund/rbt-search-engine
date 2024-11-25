@@ -1,14 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { redirect, useSearchParams } from "next/navigation";
-import { Search } from "react-bootstrap-icons";
+import { Search, X } from "react-bootstrap-icons";
 import { Node } from "@/app/types/node";
 import { useState } from "react";
+import debounce from "lodash/debounce";
 
 const SearchBar = () => {
   const searchParams = useSearchParams();
-  const query = searchParams.get("q") ?? "";
+  const paramsQuery = searchParams.get("q") ?? "";
+  const [query, setQuery] = useState<string>(paramsQuery);
   const [suggestions, setSuggestions] = useState<Node[]>([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
 
@@ -19,17 +20,35 @@ const SearchBar = () => {
     redirect(`/search?q=${query}`);
   };
 
-  const onChange = async (e: React.FormEvent<HTMLInputElement>) => {
-    const query = (e.target as HTMLInputElement).value;
-
+  const fetchSuggestions = async (query: string) => {
     const data = await (await fetch(`/api/search?q=${query}`)).json();
     setSuggestions(data);
+  };
 
-    if (query.length >= 1) {
+  const debouncedFetchSuggestions = debounce(fetchSuggestions, 300);
+
+  const onChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const newQuery = (e.target as HTMLInputElement).value;
+    setQuery(newQuery);
+    debouncedFetchSuggestions(query);
+
+    if (newQuery.length >= 1) {
       setShowSuggestions(true);
     } else {
       setShowSuggestions(false);
     }
+  };
+
+  const onSuggestionClick = (key: string) => {
+    setQuery(key);
+    setShowSuggestions(false);
+    redirect(`/search?q=${key}`);
+  };
+
+  const onClearClick = () => {
+    setQuery("");
+    setShowSuggestions(false);
+    redirect("/");
   };
 
   return (
@@ -43,24 +62,39 @@ const SearchBar = () => {
           placeholder="Search here..."
           name="q"
           onChange={onChange}
-          defaultValue={query}
+          value={query}
           className="w-full bg-secondary px-4 py-2 focus:outline-none"
           autoComplete={"off"}
         />
-        <button className="bg-blue-500 px-4 py-2 text-white">Search</button>
+        <button
+          type="button"
+          onClick={onClearClick}
+          className="h-auto bg-secondary px-4 py-2 text-white"
+        >
+          <X color="#fff" size={24} />
+        </button>
+        <button
+          type="submit"
+          className="h-auto bg-blue-400 px-4 py-2 text-white"
+        >
+          <Search size={24} color="#fff" />
+        </button>
       </form>
       <div
-        className={`${showSuggestions && suggestions.length >= 1 ? "" : "hidden"} absolute w-full rounded-b-lg bg-secondary`}
+        className={`${showSuggestions && suggestions.length >= 1 ? "" : "hidden"} absolute max-h-[300px] w-full overflow-y-auto rounded-b-lg bg-secondary`}
       >
         <ul>
-          {suggestions.map((suggestions, index) => (
-            <Link
+          {suggestions.map((suggestion, index) => (
+            <button
               key={index}
-              href={`/search?q=${suggestions.key}`}
-              className="flex items-center gap-2 px-2 py-1 hover:bg-[#3B3F43]"
+              onClick={() => onSuggestionClick(suggestion.key)}
+              className="flex w-full items-center gap-2 px-2 py-1 hover:bg-[#3B3F43]"
             >
-              <Search size={18} color="#fff" /> {suggestions.key}
-            </Link>
+              <div className="flex items-center justify-center self-center">
+                <Search size={18} color="#fff" />
+              </div>
+              <p>{suggestion.key}</p>
+            </button>
           ))}
         </ul>
       </div>

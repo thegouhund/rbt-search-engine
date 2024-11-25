@@ -1,28 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RedBlackTree } from "../RedBlackTree";
+import { faker } from "@faker-js/faker";
 
-const tree = new RedBlackTree();
-tree.insert("google", "https://www.google.com");
-tree.insert("facebook", "https://www.facebook.com");
-tree.insert("facebook1", "https://www.facebook1.com");
-tree.insert("facebook1", "https://www.facebook1.com");
-tree.insert("facebook1", "https://www.facebook1.com");
-tree.insert("facebook1", "https://www.facebook1.com");
-tree.insert("facebook1", "https://www.facebook1.com");
-tree.insert("facebook1", "https://www.facebook1.com");
-tree.insert("facebook1", "https://www.facebook1.com");
-tree.insert("facebook1", "https://www.facebook1.com");
-tree.insert("facebook1", "https://www.facebook1.com");
-tree.insert("facebook", "https://www.facebook.com");
-tree.insert("twitter", "https://www.twitter.com");
-tree.insert("github", "https://www.github.com");
-tree.insert("stackoverflow", "https://stackoverflow.com");
-tree.insert("youtube", "https://www.youtube.com");
+import webData from "../webs.json";
+
+export const tree = new RedBlackTree();
+webData.forEach((web) => {
+  tree.insert(web.key, web.url, faker.lorem.paragraphs({ min: 20, max: 50 }));
+});
 
 export async function GET(request: NextRequest) {
-  tree.printTree();
-  const query = request.nextUrl.searchParams.get("q") ?? "";
+  const query = request.nextUrl.searchParams.get("q")?.toLowerCase() ?? "";
   const results = tree.searchByKeySubstring(query);
+  console.log(query, results[0]);
 
   if (results) return NextResponse.json(results, { status: 200 });
   else return NextResponse.json({ message: "Not found" }, { status: 404 });
