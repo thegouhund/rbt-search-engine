@@ -54,10 +54,14 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="relative w-[800px]">
+    <div className="relative mx-auto w-full max-w-[800px]">
       <form
         onSubmit={onSubmit}
-        className={`${showSuggestions && suggestions.length >= 1 ? "rounded-t-lg" : "rounded-full"} flex w-full items-center overflow-hidden transition-all`}
+        className={`flex w-full items-center overflow-hidden transition-all ${
+          showSuggestions && suggestions.length >= 1
+            ? "rounded-t-lg"
+            : "rounded-full"
+        }`}
       >
         <input
           type="text"
@@ -65,37 +69,42 @@ const SearchBar = () => {
           name="q"
           onChange={onChange}
           value={query}
-          className="w-full bg-secondary px-4 py-2 focus:outline-none"
-          autoComplete={"off"}
+          className="w-full bg-secondary px-4 py-2 text-sm focus:outline-none sm:text-base"
+          autoComplete="off"
         />
         <button
           type="button"
           onClick={onClearClick}
-          className="h-auto bg-secondary px-4 py-2 text-white"
+          className="h-auto bg-secondary px-2 py-2 text-white sm:px-4"
         >
-          <X color="#fff" size={24} />
+          <X color="#fff" size={20} className="sm:h-6 sm:w-6" />
         </button>
         <button
           type="submit"
-          className="h-auto bg-blue-400 px-4 py-2 text-white"
+          className="h-auto bg-blue-400 px-2 py-2 text-white sm:px-4"
         >
-          <Search size={24} color="#fff" />
+          <Search size={20} color="#fff" className="sm:h-6 sm:w-6" />
         </button>
       </form>
+
       <div
-        className={`${showSuggestions && suggestions.length >= 1 ? "" : "hidden"} absolute max-h-[300px] w-full overflow-y-auto rounded-b-lg bg-secondary`}
+        className={`absolute left-0 w-full overflow-y-auto rounded-b-lg bg-secondary transition-all ${
+          showSuggestions && suggestions.length >= 1
+            ? "max-h-[300px]"
+            : "hidden max-h-0"
+        }`}
       >
         <ul>
           {suggestions.map((suggestion, index) => (
             <button
               key={index}
               onClick={() => onSuggestionClick(suggestion.key)}
-              className="flex w-full items-center gap-2 px-2 py-1 hover:bg-[#3B3F43]"
+              className="flex w-full items-center gap-2 px-2 py-1 text-sm hover:bg-[#3B3F43] sm:text-base"
             >
-              <div className="flex items-center justify-center self-center">
-                <Search size={18} color="#fff" />
+              <div className="flex items-center justify-center">
+                <Search size={16} color="#fff" className="sm:h-5 sm:w-5" />
               </div>
-              <p>{suggestion.key}</p>
+              <p className="truncate">{suggestion.key}</p>
             </button>
           ))}
         </ul>
