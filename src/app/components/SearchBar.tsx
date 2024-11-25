@@ -12,7 +12,7 @@ const SearchBar = () => {
   const paramsQuery = searchParams.get("q") ?? "";
   const [query, setQuery] = useState<string>(paramsQuery);
   const [suggestions, setSuggestions] = useState<Node[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ const SearchBar = () => {
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     const newQuery = (e.target as HTMLInputElement).value;
     setQuery(newQuery);
-    debouncedFetchSuggestions(query);
+    debouncedFetchSuggestions(newQuery);
 
     if (newQuery.length >= 1) {
       setShowSuggestions(true);
@@ -72,13 +72,15 @@ const SearchBar = () => {
           className="w-full bg-secondary px-4 py-2 text-sm focus:outline-none sm:text-base"
           autoComplete="off"
         />
-        <button
-          type="button"
-          onClick={onClearClick}
-          className="h-auto bg-secondary px-2 py-2 text-white sm:px-4"
-        >
-          <X color="#fff" size={20} className="sm:h-6 sm:w-6" />
-        </button>
+        {showSuggestions && (
+          <button
+            type="button"
+            onClick={onClearClick}
+            className="h-auto bg-secondary px-2 py-2 text-white sm:px-4"
+          >
+            <X color="#fff" size={20} className="sm:h-6 sm:w-6" />
+          </button>
+        )}
         <button
           type="submit"
           className="h-auto bg-blue-400 px-2 py-2 text-white sm:px-4"
