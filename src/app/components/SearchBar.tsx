@@ -23,7 +23,7 @@ const SearchBar = () => {
   };
 
   const fetchSuggestions = async (query: string) => {
-    const data = tree.searchByKeySubstring(query);
+    const data = tree.searchByKeySubstring(query.toLowerCase());
     setSuggestions(data);
   };
 
