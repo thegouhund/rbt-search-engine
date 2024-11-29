@@ -14,7 +14,7 @@ export default function SearchPage() {
   const [results, setResults] = React.useState<Node[]>([]);
 
   useEffect(() => {
-    const data = tree.searchByKeySubstring(query);
+    const data = tree.searchBySubstring(query);
     console.log("Search results:", data);
     setResults(data);
   }, [query]);

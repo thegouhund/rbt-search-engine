@@ -83,8 +83,8 @@ export default class RedBlackTree {
     this.root.isRed = false;
   }
 
-  public insert(key: string, value: string, content: string) {
-    const newNode = new Node(key, value, true, content);
+  public insert(key: string, value: string) {
+    const newNode = new Node(key, value, true);
     if (!this.root) {
       this.root = newNode;
       this.root.isRed = false;
@@ -216,6 +216,27 @@ export default class RedBlackTree {
     }
   }
 
+  public searchBySubstring(substring: string): Node[] {
+    const result: Node[] = [];
+    this.searchBySubstringHelper(this.root, substring, result);
+    return result;
+  }
+
+  private searchBySubstringHelper(
+    node: Node | null,
+    substring: string,
+    result: Node[],
+  ) {
+    if (!node) return;
+    if (node.key.toLowerCase().includes(substring)) {
+      result.push(node);
+    } else if (node.value.toLowerCase().includes(substring)) {
+      result.push(node);
+    }
+    this.searchBySubstringHelper(node.left, substring, result);
+    this.searchBySubstringHelper(node.right, substring, result);
+  }
+
   public searchByKeySubstring(substring: string): Node[] {
     const result: Node[] = [];
     this.searchByKeySubstringHelper(this.root, substring, result);
@@ -228,9 +249,11 @@ export default class RedBlackTree {
     result: Node[],
   ) {
     if (!node) return;
-    if (node.key.includes(substring)) {
-      result.push(node);
-    }
+
+    if (node.key.toLowerCase() == substring) result.unshift(node);
+
+    if (node.key.toLowerCase().includes(substring)) result.push(node);
+
     this.searchByKeySubstringHelper(node.left, substring, result);
     this.searchByKeySubstringHelper(node.right, substring, result);
   }
