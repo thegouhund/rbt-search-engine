@@ -16,9 +16,13 @@ const WebsitePage = ({ params }: { params: Params }) => {
     setNode(data);
   }, [key]);
 
+  if (!node) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="mt-8 flex h-dvh justify-center">
-      <div className="flex w-[800px] flex-col gap-8 rounded">
+      <div className="flex w-[800px] flex-col gap-8 rounded max-lg:mx-4">
         <button
           className="self-start text-blue-500 hover:underline"
           onClick={() => window.history.back()}
@@ -27,9 +31,13 @@ const WebsitePage = ({ params }: { params: Params }) => {
         </button>
         <h1 className="text-4xl">{node?.key}</h1>
         <div className="flex flex-col gap-4">
-          {node?.content
+          {node?.value
             .split("\n")
-            .map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+            .map((paragraph, index) => (
+              <p className="text-justify" key={index}>
+                {paragraph}
+              </p>
+            ))}
         </div>
       </div>
     </div>

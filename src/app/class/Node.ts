@@ -3,7 +3,6 @@ export default class Node {
     public key: string,
     public value: string,
     public isRed: boolean,
-    public content: string,
     public left: Node | null = null,
     public right: Node | null = null,
     public parent: Node | null = null,
@@ -13,7 +12,6 @@ export default class Node {
     return {
       key: this.key,
       value: this.value,
-      content: this.content,
     };
   }
 }

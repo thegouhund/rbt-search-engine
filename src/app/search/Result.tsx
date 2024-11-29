@@ -11,8 +11,8 @@ const Result = ({ result }: { result: Node }) => {
       >
         <p className="font-semibold">{result.key}</p>
       </Link>
-      {result.value}
-      <p className="text-green-600">{result.content.slice(0, 200)}</p>
+      <p>{`https://${result.key}.com`}</p>
+      <p className="text-green-600">{result.value.slice(0, 200)}</p>
     </div>
   );
 };

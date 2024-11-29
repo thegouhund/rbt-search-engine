@@ -5,9 +5,8 @@ export class GimmickNode extends Node {
   constructor(
     public key: string,
     public value: string,
-    public content: string,
     public gimmickComponent: () => ReactElement,
   ) {
-    super(key, value, false, content);
+    super(key, value, false);
   }
 }
