@@ -55,10 +55,8 @@ export default class RedBlackTree {
             this.rotateLeft(z);
           }
           z.parent.isRed = false;
-          if (z.parent.parent) {
-            z.parent.parent.isRed = true;
-            this.rotateRight(z.parent.parent);
-          }
+          z.parent.parent.isRed = true;
+          this.rotateRight(z.parent.parent);
         }
       } else {
         const y = z.parent.parent.left;
@@ -73,10 +71,8 @@ export default class RedBlackTree {
             this.rotateRight(z);
           }
           z.parent.isRed = false;
-          if (z.parent.parent) {
-            z.parent.parent.isRed = true;
-            this.rotateLeft(z.parent.parent);
-          }
+          z.parent.parent.isRed = true;
+          this.rotateLeft(z.parent.parent);
         }
       }
     }
@@ -84,7 +80,9 @@ export default class RedBlackTree {
   }
 
   public insert(key: string, value: string) {
-    const newNode = new Node(key, value, true);
+    const normalizedKey = key.trim();
+    const newNode = new Node(normalizedKey, value, true);
+
     if (!this.root) {
       this.root = newNode;
       this.root.isRed = false;
@@ -96,7 +94,10 @@ export default class RedBlackTree {
 
     while (current) {
       parent = current;
-      if (newNode.key < current.key) {
+      if (normalizedKey === current.key) {
+        current.value = value;
+        return;
+      } else if (normalizedKey < current.key) {
         current = current.left;
       } else {
         current = current.right;
@@ -105,7 +106,7 @@ export default class RedBlackTree {
 
     newNode.parent = parent;
     if (parent) {
-      if (newNode.key < parent.key) {
+      if (normalizedKey < parent.key) {
         parent.left = newNode;
       } else {
         parent.right = newNode;
@@ -127,7 +128,10 @@ export default class RedBlackTree {
 
     while (current) {
       parent = current;
-      if (newNode.key < current.key) {
+      if (newNode.key === current.key) {
+        current.value = value;
+        return;
+      } else if (newNode.key < current.key) {
         current = current.left;
       } else {
         current = current.right;
@@ -146,21 +150,32 @@ export default class RedBlackTree {
     this.fixInsert(newNode);
   }
 
-  public printTree() {
+  public printTree(): void {
     if (!this.root) {
       console.log("Tree is empty");
       return;
     }
-    this.printNode(this.root, 0);
+    this.printTreeRec(this.root, 0, true);
   }
 
-  private printNode(node: Node | null, level: number) {
+  private printTreeRec(
+    node: Node | null,
+    level: number,
+    isLeft: boolean,
+  ): void {
     if (!node) return;
-    this.printNode(node.right, level + 1);
+
+    this.printTreeRec(node.right, level + 1, false);
+
     console.log(
-      " ".repeat(level * 4) + (node.isRed ? "R" : "B") + ":" + node.key,
+      " ".repeat(level * 4) +
+        (level > 0 ? (isLeft ? "└── " : "┌── ") : "") +
+        (node.isRed ? "\x1b[31m" : "\x1b[0m") +
+        `[${level}] ${node.key}` +
+        "\x1b[0m",
     );
-    this.printNode(node.left, level + 1);
+
+    this.printTreeRec(node.left, level + 1, true);
   }
 
   public search(key: string): Node | null {

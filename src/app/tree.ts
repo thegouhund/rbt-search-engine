@@ -7,18 +7,10 @@ import { CalculatorNode } from "./class/gimmick/CalculatorNode";
 import { faker } from "@faker-js/faker";
 
 const tree = new RedBlackTree();
-tree.insertNode(new ColorNode("blue", "blue.com", ColorGimmick));
-tree.insertNode(
-  new CalculatorNode(
-    "calculator",
-    "This is a calculator gimmick node",
-    Calculator,
-  ),
-);
 
 faker.seed(123);
 
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 50; i++) {
   const value =
     faker.lorem.paragraph(10) +
     "\n" +
@@ -26,12 +18,23 @@ for (let i = 0; i < 20; i++) {
     "\n" +
     faker.lorem.paragraph(15);
 
-  tree.insert(faker.lorem.word(), value);
+  tree.insert(faker.lorem.word(10), value);
 }
+
+tree.insertNode(new ColorNode("blue", "blue.com", ColorGimmick));
+tree.insertNode(
+  new CalculatorNode(
+    "calc",
+    "This is a calculator gimmick node",
+    Calculator,
+  ),
+);
+
 webData.forEach((web) => {
   tree.insert(web.key, web.value);
 });
 
+tree.printTree()
 console.log("tree populated!!");
 
 export default tree;

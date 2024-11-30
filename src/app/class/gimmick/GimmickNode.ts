@@ -7,6 +7,6 @@ export class GimmickNode extends Node {
     public value: string,
     public gimmickComponent: () => ReactElement,
   ) {
-    super(key, value, false);
+    super(key, value, true);
   }
 }
