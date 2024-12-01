@@ -1,40 +1,53 @@
 import webData from "@/app/webs.json";
 import RedBlackTree from "./class/RedBlackTree";
-import { ColorNode } from "./class/gimmick/ColorNode";
 import ColorGimmick from "./components/gimmick/ColorGimmick";
 import Calculator from "./components/gimmick/CalculatorGimmick";
-import { CalculatorNode } from "./class/gimmick/CalculatorNode";
-import { faker } from "@faker-js/faker";
+import { GimmickNode } from "./class/GimmickNode";
+import RPSGimmick from "./components/gimmick/RPSGimmick";
+import TimerGimmick from "./components/gimmick/TimerGimmick";
 
 const tree = new RedBlackTree();
 
-faker.seed(123);
+const populateTree = () => {
+  tree.insertNode(new GimmickNode("blue", "blue content", ColorGimmick));
+  tree.insertNode(
+    new GimmickNode(
+      "calculator",
+      "This is a calculator gimmick node",
+      Calculator,
+    ),
+  );
+  tree.insertNode(
+    new GimmickNode("RPS", "Rock-Paper-Scissor game", RPSGimmick),
+  );
+  tree.insertNode(
+    new GimmickNode(
+      "rock paper scissor",
+      "Rock-Paper-Scissor game",
+      RPSGimmick,
+    ),
+  );
+  tree.insertNode(new GimmickNode("timer", "Timer feature", TimerGimmick));
 
-for (let i = 0; i < 50; i++) {
-  const value =
-    faker.lorem.paragraph(10) +
-    "\n" +
-    faker.lorem.paragraph(15) +
-    "\n" +
-    faker.lorem.paragraph(15);
+  webData.forEach((web) => {
+    tree.insert(web.key, web.value);
+  });
+};
 
-  tree.insert(faker.lorem.word(10), value);
-}
+// faker.seed(123);
 
-tree.insertNode(new ColorNode("blue", "blue.com", ColorGimmick));
-tree.insertNode(
-  new CalculatorNode(
-    "calc",
-    "This is a calculator gimmick node",
-    Calculator,
-  ),
-);
+// for (let i = 0; i < 50; i++) {
+//   const value =
+//     faker.lorem.paragraph(10) +
+//     "\n" +
+//     faker.lorem.paragraph(15) +
+//     "\n" +
+//     faker.lorem.paragraph(15);
 
-webData.forEach((web) => {
-  tree.insert(web.key, web.value);
-});
+//   tree.insert(faker.lorem.words(5), value);
+// }
 
-tree.printTree()
-console.log("tree populated!!");
+populateTree();
+tree.printTree();
 
 export default tree;
