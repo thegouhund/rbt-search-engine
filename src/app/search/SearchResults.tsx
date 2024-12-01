@@ -1,7 +1,7 @@
 import React from "react";
 import Node from "../class/Node";
 import Result from "./Result";
-import { GimmickNode } from "../class/gimmick/GimmickNode";
+import { GimmickNode } from "../class/GimmickNode";
 
 const SearchResults = ({ results }: { results: Node[] }) => {
   const firstResult = results[0];
